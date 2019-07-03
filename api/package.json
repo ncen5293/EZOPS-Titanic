@@ -1,6 +1,6 @@
 {
   "name": "titanic",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "get all information on titanic's passangers",
   "author": "Nicky Cen <nickycen74@gmail.com>",
   "main": "server.js",
@@ -8,6 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.16.1"
+    "express": "^4.16.1",
+    "mongoose": "^5.6.3"
   }
 }
