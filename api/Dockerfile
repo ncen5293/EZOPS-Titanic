@@ -8,5 +8,5 @@ RUN npm install
 
 COPY . /api/
 
-EXPOSE 80
-CMD [ "node", "server.js" ]
+EXPOSE 8080
+CMD [ "npm", "start" ]

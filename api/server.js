@@ -1,14 +1,16 @@
-'use strict';
-
-const express = require('express');
+const express = require("express");
+const helmet = require("helmet");
+const app = express();
+const testDBRouter = require("./routes/testDB");
 
 // Constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
 
 // App
-const app = express();
-let testDBRouter = require("./routes/testDB");
+app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use("/testDB", testDBRouter);
 
 app.get('/', (req, res) => {
@@ -17,3 +19,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
+
+module.exports = app;
