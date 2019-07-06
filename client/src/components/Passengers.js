@@ -4,19 +4,28 @@ class Passengers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dbResponse: 'start'
+      dbResponse: 'start',
+      passengersList: []
     };
   }
 
   callDatabase = () => {
-    fetch("http://localhost:8080/testDB")
+    fetch("http://localhost:8080/titanic")
       .then(res => res.text())
       .then(res => this.setState({dbResponse: res}))
       .catch(err => err);
   }
 
+  getAllPassengers = () => {
+    fetch("http://localhost:8080/titanic/getAllPassengers")
+      .then(res => res.text())
+      .then(res => this.setState({passengersList: res}))
+      .catch(err => err);
+  }
+
   componentDidMount = () => {
     this.callDatabase();
+    this.getAllPassengers();
   }
 
   render() {

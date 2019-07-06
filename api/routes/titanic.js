@@ -2,13 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-// Variable to be sent to Frontend with Database status
-let databaseConnection = "Waiting for Database response...";
-
-router.get("/", function(req, res, next) {
-    res.send(databaseConnection);
-});
-
 // Connecting to MongoDB
 mongoose.connect("mongodb://mongodb:27017/titanic");
 
@@ -33,16 +26,38 @@ const PassengerSchema = new Schema({
   Embarked: String
 });
 
-const PassengerModel = mongoose.model('passengers', PassengerSchema);
+const PassengerModel = mongoose.model('passenger', PassengerSchema);
 
-PassengerModel.findOne({'Survived': 1}, 'Name',
-  (err, passenger) => {
+PassengerModel.find({},
+  (err, passengers) => {
     if (err) {
       return handleError(err);
-    } else if (passenger) {
-      console.log(passenger.Name);
     }
+    passengers.forEach((passenger) => {
+      console.log(passenger.Survived);
+    })
+
   })
+
+// Variable to be sent to Frontend with Database status
+let databaseConnection = "Waiting for Database response...";
+
+router.get("/", function(req, res, next) {
+    res.send(databaseConnection);
+});
+
+router.get("/getAllPassengers", function(req, res, next) {
+  PassengerModel.find({},
+    (err, passengers) => {
+      if (err) {
+        return handleError(err);
+      }
+      // passengers.forEach((passenger) => {
+      //   console.log(passenger.Survived);
+      // })
+      res.send(passengers);
+  })
+});
 
 // If there is a connection error send an error message
 passengerDb.on("error", error => {

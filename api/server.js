@@ -1,16 +1,16 @@
 const express = require("express");
-
+const cors = require("cors");
 const app = express();
-const passengerListRouter = require("./routes/createDatabase");
+const titanicRouter = require("./routes/titanic");
 
 // Constants
 const PORT = process.env.PORT || 8080;
 
 // App
-
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/passengerList", passengerListRouter);
+app.use("/titanic", titanicRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello world\n');
