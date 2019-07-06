@@ -1,23 +1,24 @@
 const express = require("express");
-const helmet = require("helmet");
+
 const app = express();
-const testDBRouter = require("./routes/testDB");
+const passengerListRouter = require("./routes/createDatabase");
 
 // Constants
-const PORT = 8080;
-const HOST = '0.0.0.0';
+const PORT = process.env.PORT || 8080;
 
 // App
-app.use(helmet());
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use("/testDB", testDBRouter);
+app.use("/passengerList", passengerListRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello world\n');
 });
 
-app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
+
 
 module.exports = app;

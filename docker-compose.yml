@@ -20,7 +20,7 @@ services:
         build: ./api
         restart: always
         ports:
-            - "9000:9000"
+            - "8080:8080"
         volumes:
             - ./api:/api
             - /api/node_modules
