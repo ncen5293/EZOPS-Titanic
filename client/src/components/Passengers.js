@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PassengerTable from './PassengerTable';
+import axios from 'axios';
 
 class Passengers extends Component {
   constructor(props) {
@@ -10,17 +12,18 @@ class Passengers extends Component {
   }
 
   callDatabase = () => {
-    fetch("http://localhost:8080/titanic")
-      .then(res => res.text())
-      .then(res => this.setState({dbResponse: res}))
-      .catch(err => err);
+    axios.get("http://localhost:8080/titanicapi")
+      .then(res => {
+        this.setState({dbResponse: res.data})
+      })
   }
 
   getAllPassengers = () => {
-    fetch("http://localhost:8080/titanic/getAllPassengers")
-      .then(res => res.text())
-      .then(res => this.setState({passengersList: res}))
-      .catch(err => err);
+    axios.get("http://localhost:8080/titanicapi/getAllPassengers")
+      .then(res => {
+        this.setState({passengersList: res.data})
+        console.log(res.data);
+      })
   }
 
   componentDidMount = () => {
@@ -28,30 +31,36 @@ class Passengers extends Component {
     this.getAllPassengers();
   }
 
+  createNewPassenger = () => {
+    const newPassenger = {
+      PassengerId: this.state.passengersList[this.state.passengersList.length-1].PassengerId + 1,
+      Survived: 1,
+      Pclass: 2,
+      Name: 'Cent, Nick',
+      Sex: 'male',
+      Age: 22,
+      SibSp: 1,
+      Parch: 0,
+      Ticket: 12345,
+      Fare: 0.00,
+      Cabin: '',
+      Embarked: 'S'
+    };
+
+    axios.post("http://localhost:8080/titanicapi/createNewPassenger", newPassenger)
+    .then(res => {
+        console.log(res.data.personExists);
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  }
+
   render() {
     return (
       <div>
         {this.state.dbResponse}
-        <table>
-          <thead>
-            <tr>
-              <th className="sort" data-sort="name">name</th>
-              <th className="sort" data-sort="age">age</th>
-              <th>company</th>
-              <th className="sort" data-sort="number">money</th>
-              <th>active</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="left">name</td>
-              <td style={{"width":"30px"}}>age</td>
-              <td className="left">company</td>
-              <td className="money">currency</td>
-              <td data-render="setActive" className="center"></td>
-            </tr>
-          </tbody>
-        </table>
+        <button onClick={this.createNewPassenger}>Create new Passenger</button>
       </div>
     );
   }

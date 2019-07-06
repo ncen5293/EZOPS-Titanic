@@ -28,25 +28,25 @@ const PassengerSchema = new Schema({
 
 const PassengerModel = mongoose.model('passenger', PassengerSchema);
 
-PassengerModel.find({},
-  (err, passengers) => {
-    if (err) {
-      return handleError(err);
-    }
-    passengers.forEach((passenger) => {
-      console.log(passenger.Survived);
-    })
-
-  })
+// PassengerModel.find({},
+//   (err, passengers) => {
+//     if (err) {
+//       return handleError(err);
+//     }
+//     passengers.forEach((passenger) => {
+//       console.log(passenger.Survived);
+//     })
+//
+//   })
 
 // Variable to be sent to Frontend with Database status
 let databaseConnection = "Waiting for Database response...";
 
-router.get("/", function(req, res, next) {
+router.get("/", (req, res, next) => {
     res.send(databaseConnection);
 });
 
-router.get("/getAllPassengers", function(req, res, next) {
+router.get("/getAllPassengers", (req, res, next) => {
   PassengerModel.find({},
     (err, passengers) => {
       if (err) {
@@ -58,6 +58,31 @@ router.get("/getAllPassengers", function(req, res, next) {
       res.send(passengers);
   })
 });
+
+router.post("/createNewPassenger", (req, res) => {
+  console.log(req.body);
+  let newPassenger = req.body;
+  let personExists = false;
+  PassengerModel.findOne({'Name': newPassenger.Name},
+    (err, passenger) => {
+      if (err) {
+        return handleError(err);
+      }
+      if (!passenger) {
+        newPassenger._id = mongoose.Types.ObjectId();;
+        let newPassengerModel = new PassengerModel(newPassenger);
+        newPassengerModel.save((err) => {
+          if (err) {
+            return handleError(err);
+          }
+        })
+        res.status(201).json({ error: null, personExists });
+      } else {
+        personExists = true;
+        res.status(201).json({ error: null, personExists });
+      }
+  });
+})
 
 // If there is a connection error send an error message
 passengerDb.on("error", error => {
