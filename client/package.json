@@ -3,11 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
+    "awesome-typescript-loader": "^5.2.1",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "css-loader": "^3.0.0",
+    "img-loader": "^3.0.1",
+    "jqwidgets-framework": "^8.1.2",
+    "jqwidgets-scripts": "^8.1.2",
+    "raw-loader": "^3.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "reactstrap": "^8.0.0",
+    "style-loader": "^0.23.1",
+    "typescript": "^3.5.2",
+    "webpack": "4.29.6",
+    "webpack-cli": "^3.3.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -29,6 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:8080"
+  }
 }

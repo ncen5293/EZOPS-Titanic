@@ -84,6 +84,18 @@ router.post("/createNewPassenger", (req, res) => {
   });
 })
 
+router.post("/findPassenger", (req,res) => {
+  console.log(req.body);
+  PassengerModel.find({ "Name": { "$regex": `${req.body.Name}`, "$options": "i" } },
+    (err, passenger) => {
+      if (err) {
+        return handleError(err);
+      }
+      console.log(passenger);
+      res.status(201).json({ error: null, passenger });
+  });
+})
+
 // If there is a connection error send an error message
 passengerDb.on("error", error => {
     console.log("Database connection error:", error);

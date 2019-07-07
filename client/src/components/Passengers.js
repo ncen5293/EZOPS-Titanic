@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import PassengerTable from './PassengerTable';
+import Navigation from './Navigation';
+//import PassengerTable from './PassengerTable';
 import axios from 'axios';
 
 class Passengers extends Component {
@@ -7,7 +8,8 @@ class Passengers extends Component {
     super(props);
     this.state = {
       dbResponse: 'start',
-      passengersList: []
+      passengersList: [],
+      searchValue: ''
     };
   }
 
@@ -21,7 +23,7 @@ class Passengers extends Component {
   getAllPassengers = () => {
     axios.get("http://localhost:8080/titanicapi/getAllPassengers")
       .then(res => {
-        this.setState({passengersList: res.data})
+        this.setState({passengersList: res.data});
         console.log(res.data);
       })
   }
@@ -56,9 +58,31 @@ class Passengers extends Component {
     })
   }
 
+  onSearchEnter = (event) => {
+    if (event.key === 'Enter') {
+      console.log(event.target.value);
+      axios.post("http://localhost:8080/titanicapi/findPassenger", {Name: event.target.value})
+      .then(res => {
+          console.log(res.data.passenger);
+          if (res.data.passenger) {
+            this.setState({passengersList: res.data.passenger});
+          }
+          this.setState({searchValue: ''});
+      })
+      .catch(error => {
+        console.error(error)
+      })
+    }
+  }
+
+  onSearchFieldChange = (event) => {
+    this.setState({ searchValue: event.target.value });
+  }
+
   render() {
     return (
-      <div>
+      <div className="header">
+        <Navigation onSearchEnter={this.onSearchEnter} searchValue={this.state.searchValue} onSearchFieldChange={this.onSearchFieldChange}/>
         {this.state.dbResponse}
         <button onClick={this.createNewPassenger}>Create new Passenger</button>
       </div>
