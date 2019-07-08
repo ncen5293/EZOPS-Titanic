@@ -5,4 +5,4 @@ A CRUD App that lets you find information on all the passengers who were aboard 
 
 Also lets you add lost passenger data to the list of all passengers. 
 
-Uses React.js, node.js, and mongoDB.
+Uses React.js, node.js, and mongoDB, all wrapped within Docker.
