@@ -8,12 +8,14 @@ class Passengers extends Component {
     super(props);
     this.state = {
       dbResponse: 'start',
-      passengersList: [],
+      passengersList: [{PassengerId: -1,Survived: 1,Pclass: 1,Name:'Doe, John',Sex:'male',Age:1,SibSp:1,Parch:1,Ticket:'1',Fare:1,Cabin:'1',Embarked:'1'}],
       searchValue: '',
       passengerFirstName: '',
       passengerLastName: '',
       passengerSex: 'male',
-      passengerSurvived: false
+      passengerSurvived: false,
+      gotPassengerData: false,
+      createdPassenger: false
     };
   }
 
@@ -27,7 +29,7 @@ class Passengers extends Component {
   getAllPassengers = () => {
     axios.get("http://localhost:8080/titanicapi/getAllPassengers")
       .then(res => {
-        this.setState({passengersList: res.data});
+        this.setState({passengersList: res.data, gotPassengerData: true});
       })
   }
 
@@ -64,11 +66,12 @@ class Passengers extends Component {
   onSearchEnter = (event) => {
     if (event.key === 'Enter') {
       console.log(event.target.value);
+      this.setState({gotPassengerData: false})
       axios.post("http://localhost:8080/titanicapi/findPassenger", {Name: event.target.value})
       .then(res => {
           console.log(res.data.passenger);
           if (res.data.passenger) {
-            this.setState({passengersList: res.data.passenger});
+            this.setState({passengersList: res.data.passenger, gotPassengerData: true});
           }
           this.setState({searchValue: ''});
       })
@@ -83,6 +86,7 @@ class Passengers extends Component {
   }
 
   createPassengerSubmit = () => {
+    this.setState({gotPassengerData: false});
     const newPassenger = {
       PassengerId: this.state.passengersList[this.state.passengersList.length-1].PassengerId + 1,
       Survived: 1 ? this.state.passengerSurvived : 0,
@@ -99,12 +103,16 @@ class Passengers extends Component {
     };
     axios.post("http://localhost:8080/titanicapi/createNewPassenger", newPassenger)
     .then(res => {
-        console.log(res.data.personExists);
+        if (res.data.personExists) {
+          this.setState({createdPassenger: false});
+        } else {
+          this.setState({createdPassenger: true});
+        }
     })
     .catch(error => {
       console.error(error)
     })
-    this.setState({passengerFirstName: '', passengerLastName: '', passengerSex: 'male', passengerSurvived: false});
+    this.setState({passengerFirstName: '', passengerLastName: '', passengerSex: 'male', passengerSurvived: false, gotPassengerData: true});
   }
 
   handlePassengerFirstNameChange = (event) => {
@@ -129,27 +137,49 @@ class Passengers extends Component {
   // <button onClick={this.createNewPassenger}>Create new Passenger</button>
 
   render() {
-    return (
-      <div className="header">
-        <Navigation
-          onSearchEnter={this.onSearchEnter}
-          searchValue={this.state.searchValue}
-          onSearchFieldChange={this.onSearchFieldChange}
-          createPassengerSubmit={this.createPassengerSubmit}
-          passengerFirstName={this.state.passengerFirstName}
-          passengerLastName={this.state.passengerLastName}
-          passengerSex={this.state.passengerSex}
-          passengerSurvived={this.state.passengerSurvived}
-          handlePassengerFirstNameChange={this.handlePassengerFirstNameChange}
-          handlePassengerLastNameChange={this.handlePassengerLastNameChange}
-          handlePassengerSexChange={this.handlePassengerSexChange}
-          handlePassengerSurvivalChange={this.handlePassengerSurvivalChange}
-        />
-        <PassengerTable
-          passengersList={this.state.passengersList}
-        />
-      </div>
-    );
+    if (this.state.gotPassengerData) {
+      return (
+        <div className="header">
+          <Navigation
+            onSearchEnter={this.onSearchEnter}
+            searchValue={this.state.searchValue}
+            onSearchFieldChange={this.onSearchFieldChange}
+            createPassengerSubmit={this.createPassengerSubmit}
+            passengerFirstName={this.state.passengerFirstName}
+            passengerLastName={this.state.passengerLastName}
+            passengerSex={this.state.passengerSex}
+            passengerSurvived={this.state.passengerSurvived}
+            handlePassengerFirstNameChange={this.handlePassengerFirstNameChange}
+            handlePassengerLastNameChange={this.handlePassengerLastNameChange}
+            handlePassengerSexChange={this.handlePassengerSexChange}
+            handlePassengerSurvivalChange={this.handlePassengerSurvivalChange}
+            createdPassenger={this.state.createdPassenger}
+          />
+          <PassengerTable
+            passengersList={this.state.passengersList}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="header">
+          <Navigation
+            onSearchEnter={this.onSearchEnter}
+            searchValue={this.state.searchValue}
+            onSearchFieldChange={this.onSearchFieldChange}
+            createPassengerSubmit={this.createPassengerSubmit}
+            passengerFirstName={this.state.passengerFirstName}
+            passengerLastName={this.state.passengerLastName}
+            passengerSex={this.state.passengerSex}
+            passengerSurvived={this.state.passengerSurvived}
+            handlePassengerFirstNameChange={this.handlePassengerFirstNameChange}
+            handlePassengerLastNameChange={this.handlePassengerLastNameChange}
+            handlePassengerSexChange={this.handlePassengerSexChange}
+            handlePassengerSurvivalChange={this.handlePassengerSurvivalChange}
+          />
+        </div>
+      );
+    }
   }
 }
 

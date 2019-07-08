@@ -17,6 +17,7 @@ class Navigation extends Component {
             handlePassengerLastNameChange={this.props.handlePassengerLastNameChange}
             handlePassengerSexChange={this.props.handlePassengerSexChange}
             handlePassengerSurvivalChange={this.props.handlePassengerSurvivalChange}
+            createdPassenger={this.props.createdPassenger}
           />
         </div>
         <div className="item">
